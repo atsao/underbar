@@ -7,6 +7,7 @@
   // seem very useful, but remember it--if a function needs to provide an
   // iterator when the user does not pass one in, this will be handy.
   _.identity = function(val) {
+    return val;
   };
 
   /**
@@ -32,11 +33,29 @@
   // return just the first element.
   _.first = function(array, n) {
     return n === undefined ? array[0] : array.slice(0, n);
+    /*
+    // Expanded if-statement
+    if (n === undefined) {
+      return array[0];
+    } else {
+      return array.slice(0, n);
+    }
+    */
   };
 
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
+    // n is number of elements
+    if (n === undefined) {
+      return array[array.length - 1];
+    } else if (n === 0) {
+      return [];
+    } else if (n > array.length) {
+      return array;
+    } else {
+      return array.slice(Math.abs(array.length - n)); // end omitted returns through end of array
+    }
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -45,6 +64,17 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
+    if (Array.isArray(collection)) {
+      for (var i = 0; i <= collection.length - 1; i++) {
+        iterator(collection[i], i, collection);
+      }
+    } else {
+      for (var k in collection) {
+        // k = key
+        // collection[k] = value
+        iterator(collection[k], k, collection);
+      }
+    }
   };
 
   // Returns the index at which value can be found in the array, or -1 if value
@@ -53,10 +83,12 @@
     // TIP: Here's an example of a function that needs to iterate, which we've
     // implemented for you. Instead of using a standard `for` loop, though,
     // it uses the iteration helper `each`, which you will need to write.
-    var result = -1;
+    var result = -1; // Sets default result
 
     _.each(array, function(item, index) {
       if (item === target && result === -1) {
+        // Checking the item against the target and result as -1
+        // means the target has not been found until now
         result = index;
       }
     });
@@ -66,12 +98,36 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+    var result = [];
+
+    // Assuming collection is an array
+    for (var i = 0; i <= collection.length - 1; i++) {
+      if (test(collection[i])) {
+        result.push(collection[i]);
+      }
+    }
+
+    return result;
   };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
+    var result = [];
+
+    for (var k = 0; k <= collection.length - 1; k++) {
+      if (!test(collection[k])) {
+        result.push(collection[k]);
+      }
+    }
+
+    return result;
+    /*
+    // Using _.filter()
+
+    return _.filter(collection, function (x) { return !test(x); });
+    */
   };
 
   // Produce a duplicate-free version of the array.
