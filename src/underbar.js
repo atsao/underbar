@@ -200,7 +200,7 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
-    var start, i;
+    var start, i, k;
 
     if (Array.isArray(collection)) {
       if (accumulator != undefined) {
@@ -211,6 +211,11 @@
       };
       for (i = start; i <= collection.length - 1; i++) {
         accumulator = iterator(accumulator, collection[i]);
+      }
+    } else {
+      // Collection is an object, reduce values
+      for (k in collection) {
+        accumulator = iterator(accumulator, collection[k]);
       }
     }
 
@@ -233,12 +238,34 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+
+    return _.reduce(collection, function(wasTrue, item) {
+      if (iterator) {
+        return !!iterator(item) && wasTrue;
+        // iterator(item) can return a truthy or falsy value (not always literal true or false)
+        // !iterator(item) returns a true or false
+        // If iterator(item) is falsy, !iterator(item) is true, but it's actually false
+        // !! returns value I want
+        // Example:  iterator(null) returns null, which is falsy but not 'false'
+      } else {
+        return item === true;
+      }
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+
+    return _.reduce(collection, function(initialValue, item){
+      if (!iterator) {
+        iterator = function(x) {
+          return x !== false;
+        }
+      }
+      return !!iterator(item) || initialValue;
+    }, false)
   };
 
 
