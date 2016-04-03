@@ -386,6 +386,17 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    var args = [], i;
+
+    if (arguments.length > 2) {
+      for (i = 2; i <= arguments.length - 1; i++) {
+        args.push(arguments[i]);
+      }
+    }
+
+    setTimeout(function() {
+      func.apply(null, args)
+    }, wait);
   };
 
 
@@ -400,6 +411,41 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var result = array.slice(0);
+    var currentIndex;
+    var randIndex;
+    var temp;
+
+    // Fisher-Yates randomization method
+    currentIndex = result.length;
+    while (0 !== currentIndex) {
+      randIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      temp = result[currentIndex];
+      result[currentIndex] = result[randIndex];
+      result[randIndex] = temp;
+    }
+
+  /* How this works (using test case):
+  result is a copy of array: [4, 5, 6]
+
+  On first run:
+  1. currentIndex = 3
+  2. randIndex can either 0, 1, or 2
+  3. currentIndex is decremented by 1, to 2 - last element in result array
+  4. temp stores result[2], which is 6
+  5. result[2] is replaced with result[randIndex]
+  6. result[randIndex] is replaced with 6
+
+  If randIndex = 2, result array is [4, 5, 6]
+  If randIndex = 1, result array is [4, 6, 5]
+  If randIndex = 0, result array is [6, 5, 4]
+
+  On subsequent runs, the last position touched (result[2] in this case) is never touched again. The swapping happens for the remaining two positions.
+  */
+
+    return result;
   };
 
 
