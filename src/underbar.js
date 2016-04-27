@@ -98,6 +98,7 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+    /*
     var result = [];
 
     // Assuming collection is an array
@@ -106,6 +107,16 @@
         result.push(collection[i]);
       }
     }
+
+    return result;
+    */
+    var result = [];
+
+    _.each(collection, function(val) {
+      if (test(val)) {
+        result.push(val);
+      }
+    });
 
     return result;
   };
@@ -460,6 +471,20 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    // use _.each to apply the function to each item in the collection
+    return _.map(collection, function(element){
+        var func;
+      
+        if (typeof functionOrKey === "string") {
+          // Assume method/key
+          func = element[functionOrKey];//function
+        } else {
+          // assume already declared function
+          func = functionOrKey;//function being called
+        }
+      
+      return func.apply(element, args);
+    });
   };
 
   // Sort the object's values by a criterion produced by an iterator.
@@ -467,6 +492,38 @@
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    return collection.sort(function(a, b) {
+      if (typeof iterator === "string") {
+        // Iterator is referencing a method by a string value
+        // Compare the value of each object at key/iterator
+
+        // If a > b, sort b at a lower index
+        if (a[iterator] > b[iterator]) {
+          return 1;
+        }
+
+        // If a < b, sort a at a lower index
+        if (a[iterator] < b[iterator]) {
+          return -1;
+        }
+
+        // Both a and b are equal
+        return 0;
+      } else {
+        // Iterator is a function
+        // Compare the return value of calling iterator on a and b
+        
+        if (iterator(a) > iterator(b)) {
+          return 1;
+        }
+
+        if (iterator(a) < iterator(b)) {
+          return -1;
+        }
+
+        return 0;
+      }      
+    });
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -482,6 +539,18 @@
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+     var results = [];
+     var flattenArray = function(input) {
+       if (Array.isArray(input)){
+          for (var i = 0; i < input.length; i++) {
+              flattenArray(input[i]); 
+          }
+       } else {
+         results.push(input);
+       }
+     }
+     flattenArray(nestedArray);
+     return results;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
