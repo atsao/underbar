@@ -598,6 +598,28 @@
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    var removeIndexes = [];
+    var first = arguments[0];
+
+    for (var i = 0; i < first.length; i++) {
+      for (var j = 1; j < arguments.length; j++) {
+        for (var k = 0; k < arguments[j].length; k++) {
+          if (first[i] === arguments[j][k]) {
+            removeIndexes.push(first[i]);
+          }
+        }
+      }
+    }
+
+    for (i = 0; i < removeIndexes.length; i++) {
+      for (j = first.length - 1; j >= 0; j--) {
+        if (removeIndexes[i] === first[j]) {
+          first.splice(j, 1);
+        }
+      }
+    }
+    
+    return first;
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
