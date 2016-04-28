@@ -532,6 +532,28 @@
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
+    var zipElement = [];
+    var zipArray = [];
+
+    // Loop through the first argument array
+    for (var i = 0; i < arguments[0].length; i++) {
+      // For each zipped array element, initialize empty array
+      zipElement = [];
+
+      // Push the first argument array's element at position i to the zipped array element (subarray)
+      zipElement.push(arguments[0][i]);
+
+      // Loop through the remaining arguments
+      for (var j = 1; j < arguments.length; j++) {
+        // For each remaining argument j, push the element at position i (same as the first argument subarray)
+        zipElement.push(arguments[j][i]);
+      }
+
+      // Push each zipped array element (subarray) to the final result array
+      zipArray.push(zipElement);
+    }
+
+    return zipArray;
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -569,5 +591,6 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
+
   };
 }());
