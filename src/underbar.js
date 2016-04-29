@@ -471,18 +471,23 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
-    // use _.each to apply the function to each item in the collection
+    // Utilize map to return results of iterating over each element of array
     return _.map(collection, function(element){
         var func;
       
         if (typeof functionOrKey === "string") {
-          // Assume method/key
-          func = element[functionOrKey];//function
+          // Assume functionOrKey is a method/key of the target element
+          // Example 'toUpperCase' for a string
+          // Set to func
+          func = element[functionOrKey];
         } else {
-          // assume already declared function
-          func = functionOrKey;//function being called
+          // Assume already declared function referenced by functionOrKey
+          // Set to func
+          func = functionOrKey;
         }
       
+      // Return results of applying func with the element
+      // If args is not supplied, ignored by apply
       return func.apply(element, args);
     });
   };
@@ -564,9 +569,9 @@
      var results = [];
      var flattenArray = function(input) {
        if (Array.isArray(input)){
-          for (var i = 0; i < input.length; i++) {
-              flattenArray(input[i]); 
-          }
+          _.each(input, function(elem) {
+            flattenArray(elem);
+          })
        } else {
          results.push(input);
        }
