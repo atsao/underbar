@@ -633,6 +633,27 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
+    // Thanks to Jonathan Sampson for his solution
+    // https://jsfiddle.net/jonathansampson/m7G64/
 
+    // Initialize flag to pause to false
+    var pause = false;
+
+    // Return the throttled function - will fire only if the given time window has passed
+    return function() {
+      // If we're not pausing...
+      if (!pause) {
+        // Call func
+        func.call();
+
+        // Set pause to true to not trigger future function calls
+        pause = true;
+
+        // Schedule when pause flag will reset to false based on delay
+        setTimeout(function() {
+          pause = false;
+        }, wait);
+      }
+    }
   };
 }());
